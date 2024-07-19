@@ -1,32 +1,42 @@
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- Font-Awesome Link -->
-	<script src="https://kit.fontawesome.com/1dd5c5cd8c.js" crossorigin="anonymous"></script>
-	<!-- Local css -->
-	<link rel="stylesheet" type="text/css" href="./css/alarm.css">
-	<title>Alarm Clock</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alarm Clock</title>
+    <script src="https://kit.fontawesome.com/1dd5c5cd8c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/alarm.css">
 </head>
 <body>
-	<main>
-		<div id="title">Alarm Clock</div>
-		<hr>
-		<div id="current-time"><i class="fas fa-clock"></i> <span id='time'></span></div>
-		<hr>
-		<div id="form-header">Set An Alarm <i class="fas fa-user-clock"></i></div>
-		<form>
-            <label for="input-time">Select time </label>
-            <input type="time" id="input-time" name="input-time">
-            <button id="set-alarm">Set</button>
+    <main>
+        <div id="title">Alarm Clock</div>
+        <hr>
+        <div id="current-time"><i class="fas fa-clock"></i> <span id='time'></span></div>
+        <hr>
+        <div id="form-header">Set An Alarm <i class="fas fa-user-clock"></i></div>
+        <form id="alarm-form">
+            <label for="input-time">Select time</label>
+            <input type="time" id="input-time" name="input-time" required>
+            <label for="input-day">Select day</label>
+            <input type="text" id="input-day" placeholder="Select day" required readonly>
+            <button type="submit" id="set-alarm">Set</button>
         </form>
         <hr>
         <div id="alarms-container">
-        	
+           
         </div>
-	</main>
-	<!-- local JavaScript -->
-	<script type="text/javascript" src="./js/alarm.js"></script>
+    </main>
+
+    <script type="text/javascript" src="./js/alarm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr('#input-day', {
+            enableTime: false,
+            dateFormat: "l", 
+            altInput: true,
+            altFormat: "F j, Y", 
+        });
+    </script>
 </body>
 </html>

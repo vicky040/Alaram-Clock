@@ -1,114 +1,150 @@
+const alarmsDetails = [];
 
-const alarmsDetails = [];   //array of objects contains interval and alarm id, used for delete the alarm.
-
-//sets the current-time on front-end
-function currentTimeSetter(){                  
-  const now = new Date().toString();    //converting date into string
-  const timeContainer = document.getElementById('time');    //fetching element to show time
-  timeContainer.innerText = now.substring(16,24);           //putting current-time in time-container element
-  return;
+function currentTimeSetter() {
+    const now = new Date().toString();
+    const timeContainer = document.getElementById('time');
+    timeContainer.innerText = now.substring(16, 24);
 }
 
-//putting the above time function in setInterval to update the time every half-second
-setInterval(currentTimeSetter,500);
+setInterval(currentTimeSetter, 500);
 
-//fetching set-alarm button
 const setAlarmButton = document.getElementById('set-alarm');
+setAlarmButton.addEventListener('click', addAlarm);
 
-//adding click event on setAlarm button which calls the function 'addAlarm()' on click
-setAlarmButton.addEventListener('click',addAlarm);
+function addAlarm(e) {
+    e.preventDefault();
+    const inputTime = document.getElementById('input-time').value;
+    const inputDay = document.getElementById('input-day').value;
+    var id = setAlarm(inputTime, inputDay);
 
-//function to add new alarm in container and setting the alarm
-function addAlarm(e){
-  e.preventDefault();  //preventing default behaviour of button
-  const inputTime = document.getElementById('input-time').value;  //fetching the value of input-time
-  
-  var id = setAlarm(inputTime); //return interval_id if input time is valid else return false
+    if (id === false) {
+        return;
+    } else {
+        var alarmObj = { interval_id: id, alarm_id: inputTime, alarm_day: inputDay, snooze_count: 0 };
+        alarmsDetails.push(alarmObj);
 
-  if(id == false){  //if invalid time
-    return;
-  }
-  else{
-    var alarmObj = {interval_id: id, alarm_id: inputTime};  //creating the object which will be pushed in alarmDetails array
-    alarmsDetails.push(alarmObj);
+        const alarmsContainer = document.getElementById('alarms-container');
 
-    const alarmsContainer = document.getElementById('alarms-container');  //fetching alarms-container element
+        const mainDiv = document.createElement('div');
+        mainDiv.setAttribute('class', 'alarm');
+        mainDiv.setAttribute('id', inputTime); // Unique ID could include inputDay as well for better uniqueness
+        const timePara = document.createElement('p');
+        const iconClock = document.createElement('i');
+        iconClock.setAttribute('class', 'fas fa-clock');
+        timePara.append(iconClock);
+        timePara.append(` ${inputTime} on ${inputDay}`); // Display both time and day
+        const snoozeButton = document.createElement('button');
+        snoozeButton.setAttribute('data-value', inputTime);
+        snoozeButton.setAttribute('class', 'snooze');
+        snoozeButton.innerText = 'Snooze';
+        const trashButton = document.createElement('button');
+        trashButton.setAttribute('data-value', inputTime);
+        trashButton.setAttribute('class', 'delete');
+        const iconTrash = document.createElement('i');
+        iconTrash.setAttribute('class', 'fas fa-trash');
+        trashButton.append(iconTrash);
+        mainDiv.append(timePara);
+        mainDiv.append(snoozeButton);
+        mainDiv.append(trashButton);
+        alarmsContainer.prepend(mainDiv);
 
-    const mainDiv = document.createElement('div');  //creating elemnt which contains alarm
-    mainDiv.setAttribute('class','alarm');          //setting class to above alarm div
-    mainDiv.setAttribute('id',inputTime)            //setting id to above alarm div
-    const timePara = document.createElement('p');   //creating para-element which will contain the alarm time 
-    const iconClock = document.createElement('i');  //creating clock icon element
-    iconClock.setAttribute('class','fas fa-clock'); //setting class to clock icon element
-    timePara.append(iconClock);                     //appending icon element to 'timePara'
-    timePara.append(' '+inputTime+':00');           //setting alarm-time in time-para 
-    const trashButton = document.createElement('button');   //creating alarm delete button
-    trashButton.setAttribute('data-value',inputTime);       //setting data-value attribute to alarm delete button used for delete alarm
-    trashButton.setAttribute('class','delete');             //setting class to delete button
-    const iconTrash = document.createElement('i');          //creating icon element
-    iconTrash.setAttribute('class','fas fa-trash');         //setting class to icon element
-    trashButton.append(iconTrash);                          //appending icon to trash button
-    mainDiv.append(timePara);                               //appending timePara to main-alarm div
-    mainDiv.append(trashButton);                            //appending delete button to main div
-    alarmsContainer.prepend(mainDiv);                       //prepending mainDiv to alarmsContainer
+        snoozeButton.addEventListener('click', function () {
+            snoozeAlarm(inputTime);
+        });
 
-    //adding event listener to newly created alarm which will call the 'deleteAlarm()' function to delete the alarm
-    mainDiv.addEventListener('click',function(){           
-      deleteAlarm(inputTime);
-    });
-  }
-}
-
-//function to delete alarm
-function deleteAlarm(inputTime){
-  
-  var deleteElem = document.getElementById(inputTime); //removing alarm div from alarms-container
-  deleteElem.parentNode.removeChild(deleteElem);        
-
-  //finding the setInterval alarm ID from 'alarmsDetails[]' array and clearing the Interval
-  for(let i=0;i<alarmsDetails.length;i++){
-    if(alarmsDetails[i].alarm_id == inputTime){
-      clearInterval(alarmsDetails[i].interval_id);
+        trashButton.addEventListener('click', function () {
+            deleteAlarm(inputTime);
+        });
     }
-  }
 }
 
-//rings alarms by alerting on the webpage
-function ringAlarm(alarmDate,id,inputTime){
-      const now = new Date();
-      if(alarmDate - now <= 0){
+function deleteAlarm(inputTime) {
+    var deleteElem = document.getElementById(inputTime);
+    deleteElem.parentNode.removeChild(deleteElem);
+
+    for (let i = 0; i < alarmsDetails.length; i++) {
+        if (alarmsDetails[i].alarm_id == inputTime) {
+            clearInterval(alarmsDetails[i].interval_id);
+            alarmsDetails.splice(i, 1); 
+            break; 
+        }
+    }
+}
+
+function ringAlarm(alarmDate, id, inputTime) {
+    const now = new Date();
+    
+    console.log('Current time:', now);
+    console.log('Alarm time:', alarmDate);
+
+    if (alarmDate - now <= 0) {
         alert('Alarm Ringing.....Wake up!');
         clearInterval(id);
-        const alarmToDelete = document.getElementById(inputTime);  
-        alarmToDelete.parentNode.removeChild(alarmToDelete);         //deleting the alarm after alert
-      }
+        const alarmToDelete = document.getElementById(inputTime);
+        alarmToDelete.parentNode.removeChild(alarmToDelete);
+        deleteAlarm(inputTime); 
+    }
 }
 
-//converts the input (hh:mm) time into complete time
-function alarmTime(time){
+function alarmTime(time, day) {
   var today = new Date();
+  var dayIndex = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(day);
+
+  if (dayIndex === -1) {
+      console.error('Invalid day:', day);
+      return null; // Handle invalid input gracefully
+  }
+
+  var diff = dayIndex - today.getDay();
+  if (diff <= 0) {
+      diff += 7; // Move to next week if the selected day is earlier in the current week
+  }
+
+  today.setDate(today.getDate() + diff);
+
   var dd = String(today.getDate()).padStart(2, '0');
-  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var mm = String(today.getMonth() + 1).padStart(2, '0');
   var yyyy = today.getFullYear();
 
-  today = yyyy + '-' + mm + '-' + dd;
-  time = new Date(today+' '+time+':00');
-  return time;
+  var alarmDate = new Date(`${yyyy}-${mm}-${dd} ${time}:00`);
+  return alarmDate;
 }
 
-//set the alarm of inputTime
-function setAlarm(inputTime){
-  const alarmDate = alarmTime(inputTime);   //getting alarm date from alarmTime() function
+
+function setAlarm(inputTime, inputDay) {
+  const alarmDate = alarmTime(inputTime, inputDay);
   const now = new Date();
-  if(alarmDate - now >= 0){                 //only saving the alarm for today only and of future time
-    console.log('alarm set');
-    var id = setInterval(function(){
-      ringAlarm(alarmDate,id,inputTime);
-    },1000);
-    return id;
+  if (alarmDate - now >= 0) {
+      console.log('Alarm set for', alarmDate);
+      var id = setInterval(function () {
+          ringAlarm(alarmDate, id, inputTime);
+      }, 1000);
+      return id;
+  } else {
+      alert('Alarm can\'t be set for the past time');
+      return false;
   }
-  else{
-    alert('Alarm cant be saved for the past time');    //if input-time is from past then it will return false
-    return false; 
-  }
+}
+
+
+function snoozeAlarm(inputTime) {
+    const snoozeInterval = 5 * 60 * 1000; // 5 minutes in milliseconds
+    let snoozeCount = 0;
+    for (let i = 0; i < alarmsDetails.length; i++) {
+        if (alarmsDetails[i].alarm_id === inputTime) {
+            if (alarmsDetails[i].snooze_count < 3) {
+                clearInterval(alarmsDetails[i].interval_id);
+                const newAlarmTime = new Date().getTime() + snoozeInterval;
+                alarmsDetails[i].interval_id = setInterval(function () {
+                    ringAlarm(new Date(newAlarmTime), alarmsDetails[i].interval_id, inputTime);
+                }, 1000);
+                alarmsDetails[i].snooze_count++;
+                console.log(`Alarm snoozed ${alarmsDetails[i].snooze_count} time(s).`);
+                return;
+            } else {
+                alert('Maximum snooze limit reached for this alarm.');
+                return;
+            }
+        }
+    }
 }

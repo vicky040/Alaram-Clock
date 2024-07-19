@@ -1,19 +1,19 @@
 body{
 	margin: 0;
 	padding: 0;
-	background: url('../images/2019Creative_Wallpaper_Black_alarm_clock_on_yellow_background_133441_.jpg');
+	background: url('../images/alaram1.jpeg');
 	background-size: cover;
 	width: 100vw;
-	height: 100vh;
+	height: 50vh;
 }
 
 
 main{
-	position: relative;
+	position:relative; 
 	width: 50%;
 	height: 82%;
 	top: 13%;
-	left: 45%;
+	left: 5%;
 	background: rgb(0, 0, 0,0.5);
 }
 

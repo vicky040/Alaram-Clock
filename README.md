@@ -1,20 +1,46 @@
-# Alarm Clock
-A basic app with clean and responsive UI which sets the multiple alarms and rings.
+## Alarm Clock App
 
-# Tech Stack
-1) HTML
-2) CSS
-3) JavaScript
-4) Used Node, Express and EJS for deployement
+### Description
+This is a simple web application that functions as an alarm clock with a clean and responsive user interface. Users can set multiple alarms and receive alerts at the specified times. Additionally, users have the ability to delete alarms that have been set.
 
-# Desc
-A basic alarm clock which will create multiple alarms and alert on each alarm. User can also delete the added alarm.
+### Tech Stack
+- HTML
+- CSS
+- JavaScript
+- Node.js
+- Express
+- EJS (Embedded JavaScript templates)
 
-# Setup on local machine
-Simply pull the code, install all dependencies and and start the express server by the command 'npm start'. The server will be up and running on port 8000.
+### Local Setup Instructions
+To run this application locally on your machine, follow these steps:
 
-# Deployement
-Project already deployed on Heroku
-Do Visit: https://alarm-clock-hamm.herokuapp.com/
+1. **Clone the Repository:**
+   ```bash
+   git clone <repository-url>
+   cd alarm-clock-app
+   ```
 
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
 
+3. **Start the Server:**
+   ```bash
+   npm start
+   ```
+   The server will start running on port 8080.
+
+4. **Access the Application:**
+   Open your web browser and go to `http://localhost:8080` to view and interact with the alarm clock application.
+
+### Features
+- **Multiple Alarms:** Users can create and set multiple alarms by specifying the time.
+- **Alert Functionality:** The application alerts users visually or audibly at the specified alarm times.
+- **Alarm Deletion:** Users can delete alarms that are no longer needed.
+
+### Notes
+- Customize the alarm sound or visual alert as per your preference by modifying the JavaScript code responsible for alarm functionality.
+- Extend the functionality by adding features like snooze options or recurring alarms based on day of week.
+
+This application provides a foundational alarm clock functionality using web technologies, making it easy for users to manage their daily schedules effectively.
